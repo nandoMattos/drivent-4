@@ -81,10 +81,19 @@ export type CreateOrUpdateEnrollmentWithAddress = CreateEnrollmentParams & {
   address: CreateAddressParams;
 };
 
+async function verifyEnrollmentAndTicket(userId: number) {
+  const enrollmentAndTicket = await enrollmentRepository.getEnrollmentAndTicketByUserId(userId);
+  if(!enrollmentAndTicket || enrollmentAndTicket.Ticket.length === 0) {
+    throw notFoundError();
+  }
+  return enrollmentAndTicket;
+} 
+
 const enrollmentsService = {
   getOneWithAddressByUserId,
   createOrUpdateEnrollmentWithAddress,
-  getAddressFromCEP
+  getAddressFromCEP,
+  verifyEnrollmentAndTicket
 };
 
 export default enrollmentsService;
