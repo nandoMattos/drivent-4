@@ -7,7 +7,7 @@ async function findAllHotels(userId: number) {
   const { status } = Ticket[0];
   const { includesHotel, isRemote } = Ticket[0].TicketType;
 
-  if(status !== "PAID" || includesHotel === false || isRemote === true) {
+  if(status !== "PAID" || isRemote === true ||  includesHotel === false) {
     throw paymentRequiredError();
   }
 
