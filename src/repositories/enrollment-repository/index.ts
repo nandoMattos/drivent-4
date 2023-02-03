@@ -36,16 +36,11 @@ export type UpdateEnrollmentParams = Omit<CreateEnrollmentParams, "userId">;
 function getEnrollmentAndTicketByUserId(userId: number) {
   return prisma.enrollment.findFirst({
     where: { userId },
-    select: { 
+    include: { 
       Ticket: {
         select: {
+          id: true,
           status: true,
-          TicketType: {
-            select: {
-              includesHotel: true,
-              isRemote: true,
-            }
-          }
         }
       }
     }

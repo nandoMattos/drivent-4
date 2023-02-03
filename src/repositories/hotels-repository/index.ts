@@ -4,8 +4,21 @@ function findAll() {
   return prisma.hotel.findMany();
 }
 
+function findById(id: number) {
+  return prisma.hotel.findFirst(
+    { where: 
+      { id },
+    include: {
+      Rooms: true
+    } 
+    }
+    
+  );
+}
+
 const hotelsRepository = {
-  findAll
+  findAll,
+  findById
 };
 
 export default hotelsRepository;
