@@ -44,7 +44,7 @@ async function createTicket(userId: number, ticketTypeId: number) {
   return ticket;
 }
 
-async function verifyIfIncludesHotel(ticketId: number) {
+async function verifyIfIncludesHotel(ticketId: number): Promise<void> {
   const { TicketType } = await ticketRepository.findTickeWithTypeById(ticketId);
 
   if(TicketType.includesHotel === false || TicketType.isRemote === true) {

@@ -1,9 +1,10 @@
 import { notFoundError, paymentRequiredError } from "@/errors";
 import hotelsRepository from "@/repositories/hotels-repository";
+import { Hotel } from "@prisma/client";
 import enrollmentsService from "../enrollments-service";
 import ticketService from "../tickets-service";
 
-async function findAllHotels(userId: number) {
+async function findAllHotels(userId: number): Promise<Hotel[]> {
   const { Ticket } = await enrollmentsService.verifyEnrollmentAndTicket(userId);
   if(Ticket[0].status !== "PAID") {
     throw paymentRequiredError();
@@ -14,7 +15,7 @@ async function findAllHotels(userId: number) {
   return await hotelsRepository.findAll();
 }
 
-async function findHotelById(userId: number, hotelId: number) {
+async function findHotelById(userId: number, hotelId: number): Promise<Hotel> {
   const { Ticket } = await enrollmentsService.verifyEnrollmentAndTicket(userId);
   if(Ticket[0].status !== "PAID") {
     throw paymentRequiredError();
