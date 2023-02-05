@@ -24,7 +24,10 @@ export async function getAllHotels(req: AuthenticatedRequest, res: Response) {
 export async function getHotelRooms(req: AuthenticatedRequest, res: Response) {
   try{
     const { userId } = req;
-    const hotelId = req.params.hotelId as unknown as number;
+    const hotelId = Number(req.params.hotelId);
+    if(isNaN( hotelId)) {
+      return res.sendStatus(400);
+    }
     const hotel = await hotelsService.findHotelById(userId, hotelId);
     res.status(httpStatus.OK).send(hotel);
   } catch(err) {

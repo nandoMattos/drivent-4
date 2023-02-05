@@ -1,4 +1,4 @@
-import { paymentRequiredError } from "@/errors";
+import { notFoundError, paymentRequiredError } from "@/errors";
 import hotelsRepository from "@/repositories/hotels-repository";
 import enrollmentsService from "../enrollments-service";
 import ticketService from "../tickets-service";
@@ -22,7 +22,11 @@ async function findHotelById(userId: number, hotelId: number) {
 
   await ticketService.verifyIfIncludesHotel(Ticket[0].id);
 
-  return await hotelsRepository.findById(hotelId);
+  const hotel = await hotelsRepository.findById(hotelId);
+  if(!hotel) {
+    throw notFoundError();
+  }
+  return hotel;
 }
 
 const hotelsService = {
