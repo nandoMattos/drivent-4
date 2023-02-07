@@ -9,12 +9,15 @@ export async function getAllHotels(req: AuthenticatedRequest, res: Response) {
     const hotels = await hotelsService.findAllHotels(userId);
     res.status(httpStatus.OK).send(hotels);
   } catch(err) {
+    if(err.name === "ForbiddenError") {
+      return res.status(httpStatus.FORBIDDEN).send(err.message);
+    }
     if(err.name === "PaymentRequiredError") {
-      res.status(httpStatus.PAYMENT_REQUIRED).send(err.message);
+      return res.status(httpStatus.PAYMENT_REQUIRED).send(err.message);
     }
 
     if(err.name === "NotFoundError") {
-      res.status(httpStatus.NOT_FOUND).send(err.message);
+      return res.status(httpStatus.NOT_FOUND).send(err.message);
     }
 
     res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
@@ -31,6 +34,9 @@ export async function getHotelRooms(req: AuthenticatedRequest, res: Response) {
     const hotel = await hotelsService.findHotelById(userId, hotelId);
     res.status(httpStatus.OK).send(hotel);
   } catch(err) {
+    if(err.name === "ForbiddenError") {
+      return res.status(httpStatus.FORBIDDEN).send(err.message);
+    }
     if(err.name === "PaymentRequiredError") {
       res.status(httpStatus.PAYMENT_REQUIRED).send(err.message);
     }
