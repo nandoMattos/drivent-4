@@ -25,9 +25,7 @@ async function getUserBooking(userId: number): Promise<GetBookingAndRoom> {
   if(!userBooking) {
     throw notFoundError();
   }
-  const bookingFiltered = exclude(userBooking, "createdAt", "updatedAt", "userId", "roomId") as GetBookingAndRoom;
-  
-  return bookingFiltered;
+  return exclude(userBooking, "createdAt", "updatedAt", "userId", "roomId") as GetBookingAndRoom;  
 }
 
 async function verifyUserBooking(userId: number): Promise<void> {
