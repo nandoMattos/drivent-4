@@ -13,3 +13,14 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
     handleApplicationErrors(err, req, res);
   }
 }
+
+export async function getBooking(req: AuthenticatedRequest, res: Response) {
+  try{
+    const { userId } = req;
+    const userBooking = await bookingService.getUserBooking(userId);
+
+    res.status(httpStatus.OK).send(userBooking);
+  } catch(err) {
+    handleApplicationErrors(err, req, res);
+  }
+}

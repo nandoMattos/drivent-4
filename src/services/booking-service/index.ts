@@ -1,6 +1,7 @@
 import { forbiddenError, notFoundError, paymentRequiredError } from "@/errors";
-import bookingRepository from "@/repositories/booking-repository";
+import bookingRepository, { BookingAndRoom } from "@/repositories/booking-repository";
 import roomRepository from "@/repositories/room-repository";
+import { exclude } from "@/utils/prisma-utils";
 import { Booking } from "@prisma/client";
 import enrollmentsService from "../enrollments-service";
 import ticketService from "../tickets-service";
@@ -18,7 +19,18 @@ async function insertBooking(userId: number, roomId: number): Promise<Booking> {
   return await bookingRepository.createBookig(userId, roomId);
 }
 
-async function verifyUserBooking(userId: number) {
+type GetBookingAndRoom = Omit<BookingAndRoom, "createdAt" | "updatedAt" | "userId" | "roomId" >
+async function getUserBooking(userId: number): Promise<GetBookingAndRoom> {
+  const userBooking = await bookingRepository.findOneByUserId(userId);
+  if(!userBooking) {
+    throw notFoundError();
+  }
+  const bookingFiltered = exclude(userBooking, "createdAt", "updatedAt", "userId", "roomId") as GetBookingAndRoom;
+  
+  return bookingFiltered;
+}
+
+async function verifyUserBooking(userId: number): Promise<void> {
   const existentBooking = await bookingRepository.findOneByUserId(userId);
 
   if(existentBooking) {
@@ -26,7 +38,7 @@ async function verifyUserBooking(userId: number) {
   }
 }
 
-async function verifyRoomCapacity(roomId: number) {
+async function verifyRoomCapacity(roomId: number): Promise<void> {
   const room = await roomRepository.findRoomById(roomId);
   if(!room) {
     throw notFoundError("Given room not found.");
@@ -39,6 +51,7 @@ async function verifyRoomCapacity(roomId: number) {
 
 const bookingService = {
   insertBooking,
+  getUserBooking,
 };
 
 export default bookingService;
