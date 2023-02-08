@@ -10,8 +10,8 @@ async function insertBooking(userId: number, roomId: number): Promise<Booking> {
   if(Ticket[0].status !== "PAID") {
     throw paymentRequiredError();
   }
-
   await ticketService.verifyIfIncludesHotel(Ticket[0].id);
+
   await verifyUserBooking(userId);
   await verifyRoomCapacity(roomId);
 

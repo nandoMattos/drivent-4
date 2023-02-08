@@ -275,8 +275,8 @@ describe("GET /hotels/:hotelId", () => {
         const enrollment = await createEnrollmentWithAddress(user);
         const ticketTypeNotRemoteAndWithHotel = await createTicketType({ isRemote: false, includesHotel: true });
         const ticket = await createTicket(enrollment.id, ticketTypeNotRemoteAndWithHotel.id, TicketStatus.RESERVED);
-        const hotel = await createHotel({ name: "hotel da massa" });
-        await createRoom({ hotelId: hotel.id, name: "quarto bao" });
+        const hotel = await createHotel();
+        await createRoom({ hotelId: hotel.id });
   
         const body = { ticketId: ticket.id, cardData: generateCreditCardData() };
         await server.post("/payments/process").set("Authorization", `Bearer ${token}`).send(body);
