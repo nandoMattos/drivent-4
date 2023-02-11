@@ -24,3 +24,17 @@ export async function getBooking(req: AuthenticatedRequest, res: Response) {
     handleApplicationErrors(err, req, res);
   }
 }
+
+export async function putBooking(req: AuthenticatedRequest, res: Response) {
+  try{
+    const { userId } = req;
+    const bookingId = Number(req.params.bookingId);
+    if(isNaN(bookingId)) return res.sendStatus(400);
+    const roomId = Number(req.body.roomId);
+
+    const updatedBooking = await bookingService.updateBooking(userId, bookingId, roomId);
+    res.send(httpStatus.OK).send({ bookingId: updatedBooking.id });
+  } catch(err) {
+    handleApplicationErrors(err, req, res);
+  }
+}

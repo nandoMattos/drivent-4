@@ -16,7 +16,7 @@ async function insertBooking(userId: number, roomId: number): Promise<Booking> {
   await verifyUserBooking(userId);
   await verifyRoomCapacity(roomId);
 
-  return await bookingRepository.createBookig(userId, roomId);
+  return await bookingRepository.upsertBooking(userId, roomId);
 }
 
 type GetBookingAndRoom = Omit<BookingAndRoom, "createdAt" | "updatedAt" | "userId" | "roomId" >
@@ -47,9 +47,24 @@ async function verifyRoomCapacity(roomId: number): Promise<void> {
   }
 }
 
+async function updateBooking(userId: number, bookingId: number, roomId: number): Promise<Booking> {
+  await verifyBookingBelongsToUser(userId, bookingId);
+  await verifyRoomCapacity(roomId);
+
+  return bookingRepository.upsertBooking(userId, roomId, bookingId);
+}
+
+async function verifyBookingBelongsToUser(userId: number, bookingId: number): Promise<void> {
+  const booking = await bookingRepository.findOneByUserId(userId);
+  if(!booking || booking.id !== bookingId) {
+    throw forbiddenError("Given booking doesn't belongs to user");
+  }
+}
+
 const bookingService = {
   insertBooking,
   getUserBooking,
+  updateBooking
 };
 
 export default bookingService;

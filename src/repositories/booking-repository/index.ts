@@ -1,9 +1,11 @@
 import { prisma } from "@/config";
 import { Booking, PrismaPromise, Room } from "@prisma/client";
 
-function createBookig(userId: number, roomId: number): PrismaPromise<Booking> {
-  return prisma.booking.create({
-    data: { roomId, userId }
+function upsertBooking(userId: number, roomId: number, bookingId = 0): PrismaPromise<Booking> {
+  return prisma.booking.upsert({
+    where: { id: bookingId },
+    update: { roomId },
+    create: { roomId, userId }
   });
 }
 
@@ -19,7 +21,7 @@ function findOneByUserId(userId: number): PrismaPromise<BookingAndRoom> {
 }
 
 const bookingRepository = {
-  createBookig,
+  upsertBooking,
   findOneByUserId
 };
 
