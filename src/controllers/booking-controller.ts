@@ -8,7 +8,7 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
     const { userId } = req;
     const roomId = Number(req.body.roomId);
     const booking = await bookingService.insertBooking(userId, roomId);
-    return res.status(httpStatus.CREATED).send({ bookingId: booking.id });
+    res.status(httpStatus.CREATED).send({ bookingId: booking.id });
   } catch (err) {
     handleApplicationErrors(err, req, res);
   }
@@ -18,7 +18,6 @@ export async function getBooking(req: AuthenticatedRequest, res: Response) {
   try{
     const { userId } = req;
     const userBooking = await bookingService.getUserBooking(userId);
-
     res.status(httpStatus.OK).send(userBooking);
   } catch(err) {
     handleApplicationErrors(err, req, res);
@@ -32,8 +31,8 @@ export async function putBooking(req: AuthenticatedRequest, res: Response) {
     if(isNaN(bookingId)) return res.sendStatus(400);
     const roomId = Number(req.body.roomId);
 
-    const updatedBooking = await bookingService.updateBooking(userId, bookingId, roomId);
-    res.send(httpStatus.OK).send({ bookingId: updatedBooking.id });
+    await bookingService.updateBooking(userId, bookingId, roomId);
+    res.sendStatus(httpStatus.OK);
   } catch(err) {
     handleApplicationErrors(err, req, res);
   }
