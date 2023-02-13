@@ -10,6 +10,7 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
     const booking = await bookingService.insertBooking(userId, roomId);
     res.status(httpStatus.CREATED).send({ bookingId: booking.id });
   } catch (err) {
+    // I'm pretty sure this is not not how this middleware is supposed to be used, but it's not been used at all
     handleApplicationErrors(err, req, res);
   }
 }
